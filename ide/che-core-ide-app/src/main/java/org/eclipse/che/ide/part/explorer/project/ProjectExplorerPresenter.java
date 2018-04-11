@@ -64,6 +64,7 @@ import org.eclipse.che.ide.resources.reveal.RevealResourceEvent;
 import org.eclipse.che.ide.resources.tree.ResourceNode;
 import org.eclipse.che.ide.ui.smartTree.NodeDescriptor;
 import org.eclipse.che.ide.ui.smartTree.Tree;
+import org.eclipse.che.ide.ui.smartTree.event.NodeAddedEvent;
 import org.eclipse.che.ide.ui.smartTree.data.Node;
 import org.eclipse.che.ide.ui.smartTree.data.TreeExpander;
 import org.eclipse.che.ide.ui.smartTree.data.settings.NodeSettings;
@@ -166,6 +167,14 @@ public class ProjectExplorerPresenter extends BasePresenter
                 }
               }
             });
+
+    view.getTree().addNodeAddedHandler(event -> {
+      event.getNodes().forEach(node -> {
+        if (node instanceof ResourceNode) {
+            expandQueue.add(((ResourceNode) node).getData().getLocation());
+        }
+      });
+    });
 
     treeExpander = new ProjectExplorerTreeExpander(view.getTree(), appContext);
 
